@@ -1,0 +1,554 @@
+[
+  {
+    "code": "H01",
+    "name": "White",
+    "rgbHex": "#E5ECF1",
+    "source": "beadcolors"
+  },
+  {
+    "code": "H02",
+    "name": "Cream",
+    "rgbHex": "#E4E4C5",
+    "source": "beadcolors"
+  },
+  {
+    "code": "H03",
+    "name": "Yellow",
+    "rgbHex": "#E9C704",
+    "source": "beadcolors"
+  },
+  {
+    "code": "H04",
+    "name": "Orange",
+    "rgbHex": "#D14803",
+    "source": "beadcolors"
+  },
+  {
+    "code": "H05",
+    "name": "Red",
+    "rgbHex": "#B4060E",
+    "source": "beadcolors"
+  },
+  {
+    "code": "H06",
+    "name": "Pink",
+    "rgbHex": "#EA8AA5",
+    "source": "beadcolors"
+  },
+  {
+    "code": "H07",
+    "name": "Purple",
+    "rgbHex": "#712297",
+    "source": "beadcolors"
+  },
+  {
+    "code": "H08",
+    "name": "Blue",
+    "rgbHex": "#0239A3",
+    "source": "beadcolors"
+  },
+  {
+    "code": "H09",
+    "name": "Light Blue",
+    "rgbHex": "#025BC3",
+    "source": "beadcolors"
+  },
+  {
+    "code": "H10",
+    "name": "Green",
+    "rgbHex": "#027643",
+    "source": "beadcolors"
+  },
+  {
+    "code": "H11",
+    "name": "Light Green",
+    "rgbHex": "#19CDA7",
+    "source": "beadcolors"
+  },
+  {
+    "code": "H12",
+    "name": "Brown",
+    "rgbHex": "#3E271A",
+    "source": "beadcolors"
+  },
+  {
+    "code": "H13",
+    "name": "Transparent Red",
+    "rgbHex": "#C02435",
+    "source": "beadcolors"
+  },
+  {
+    "code": "H14",
+    "name": "Transparent Yellow",
+    "rgbHex": "#E4AA32",
+    "source": "beadcolors"
+  },
+  {
+    "code": "H16",
+    "name": "Transparent Green",
+    "rgbHex": "#37B876",
+    "source": "beadcolors"
+  },
+  {
+    "code": "H17",
+    "name": "Grey",
+    "rgbHex": "#838F98",
+    "source": "beadcolors"
+  },
+  {
+    "code": "H18",
+    "name": "Black",
+    "rgbHex": "#141315",
+    "source": "beadcolors"
+  },
+  {
+    "code": "H19",
+    "name": "Clear",
+    "rgbHex": "#D8D2CE",
+    "source": "beadcolors"
+  },
+  {
+    "code": "H20",
+    "name": "Reddish Brown",
+    "rgbHex": "#8D2A0F",
+    "source": "beadcolors"
+  },
+  {
+    "code": "H21",
+    "name": "Light Brown",
+    "rgbHex": "#BE6C21",
+    "source": "beadcolors"
+  },
+  {
+    "code": "H22",
+    "name": "Dark Red",
+    "rgbHex": "#91020A",
+    "source": "beadcolors"
+  },
+  {
+    "code": "H24",
+    "name": "Translucent Purple",
+    "rgbHex": "#683E9A",
+    "source": "beadcolors"
+  },
+  {
+    "code": "H25",
+    "name": "Translucent Brown",
+    "rgbHex": "#87593D",
+    "source": "beadcolors"
+  },
+  {
+    "code": "H26",
+    "name": "Matt Rose",
+    "rgbHex": "#E8A498",
+    "source": "beadcolors"
+  },
+  {
+    "code": "H27",
+    "name": "Beige",
+    "rgbHex": "#DCB18E",
+    "source": "beadcolors"
+  },
+  {
+    "code": "H28",
+    "name": "Dark Green",
+    "rgbHex": "#1E2C1C",
+    "source": "beadcolors"
+  },
+  {
+    "code": "H29",
+    "name": "Claret",
+    "rgbHex": "#BF0142",
+    "source": "beadcolors"
+  },
+  {
+    "code": "H30",
+    "name": "Burgundy",
+    "rgbHex": "#4E0C1B",
+    "source": "beadcolors"
+  },
+  {
+    "code": "H31",
+    "name": "Turquoise",
+    "rgbHex": "#489AB9",
+    "source": "beadcolors"
+  },
+  {
+    "code": "H32",
+    "name": "Neon Fuchsia",
+    "rgbHex": "#FF208D",
+    "source": "beadcolors"
+  },
+  {
+    "code": "H33",
+    "name": "Cerise",
+    "rgbHex": "#FF3956",
+    "source": "beadcolors"
+  },
+  {
+    "code": "H34",
+    "name": "Neon Yellow",
+    "rgbHex": "#E5EF13",
+    "source": "beadcolors"
+  },
+  {
+    "code": "H35",
+    "name": "Neon Red",
+    "rgbHex": "#FF2833",
+    "source": "beadcolors"
+  },
+  {
+    "code": "H36",
+    "name": "Neon Blue",
+    "rgbHex": "#2353B0",
+    "source": "beadcolors"
+  },
+  {
+    "code": "H37",
+    "name": "Neon Green",
+    "rgbHex": "#06B73C",
+    "source": "beadcolors"
+  },
+  {
+    "code": "H38",
+    "name": "Neon Orange",
+    "rgbHex": "#FD8600",
+    "source": "beadcolors"
+  },
+  {
+    "code": "H39",
+    "name": "Fluorescent Yellow",
+    "rgbHex": "#F1F21C",
+    "source": "beadcolors"
+  },
+  {
+    "code": "H40",
+    "name": "Fluorescent Orange",
+    "rgbHex": "#FE630B",
+    "source": "beadcolors"
+  },
+  {
+    "code": "H41",
+    "name": "Fluorescent Blue",
+    "rgbHex": "#2659B2",
+    "source": "beadcolors"
+  },
+  {
+    "code": "H42",
+    "name": "Fluorescent Green",
+    "rgbHex": "#0CBD51",
+    "source": "beadcolors"
+  },
+  {
+    "code": "H43",
+    "name": "Pastel Yellow",
+    "rgbHex": "#E7E45A",
+    "source": "beadcolors"
+  },
+  {
+    "code": "H44",
+    "name": "Pastel Red",
+    "rgbHex": "#F96160",
+    "source": "beadcolors"
+  },
+  {
+    "code": "H45",
+    "name": "Pastel Purple",
+    "rgbHex": "#8E69CD",
+    "source": "beadcolors"
+  },
+  {
+    "code": "H46",
+    "name": "Pastel Blue",
+    "rgbHex": "#51AEE4",
+    "source": "beadcolors"
+  },
+  {
+    "code": "H47",
+    "name": "Pastel Green",
+    "rgbHex": "#80DF96",
+    "source": "beadcolors"
+  },
+  {
+    "code": "H48",
+    "name": "Pastel Pink",
+    "rgbHex": "#D67AD1",
+    "source": "beadcolors"
+  },
+  {
+    "code": "H49",
+    "name": "Azure",
+    "rgbHex": "#0FACD1",
+    "source": "beadcolors"
+  },
+  {
+    "code": "H60",
+    "name": "Teddybear Brown",
+    "rgbHex": "#F0981E",
+    "source": "beadcolors"
+  },
+  {
+    "code": "H70",
+    "name": "Light Grey",
+    "rgbHex": "#A5B3C0",
+    "source": "beadcolors"
+  },
+  {
+    "code": "H71",
+    "name": "Dark Grey",
+    "rgbHex": "#445059",
+    "source": "beadcolors"
+  },
+  {
+    "code": "H75",
+    "name": "Tan",
+    "rgbHex": "#B78C6D",
+    "source": "beadcolors"
+  },
+  {
+    "code": "H76",
+    "name": "Nougat",
+    "rgbHex": "#8A5937",
+    "source": "beadcolors"
+  },
+  {
+    "code": "H77",
+    "name": "Cloudy White",
+    "rgbHex": "#CED1C8",
+    "source": "beadcolors"
+  },
+  {
+    "code": "H78",
+    "name": "Light Peach",
+    "rgbHex": "#F7C1AA",
+    "source": "beadcolors"
+  },
+  {
+    "code": "H79",
+    "name": "Apricot",
+    "rgbHex": "#F87633",
+    "source": "beadcolors"
+  },
+  {
+    "code": "H82",
+    "name": "Plum",
+    "rgbHex": "#91175A",
+    "source": "beadcolors"
+  },
+  {
+    "code": "H83",
+    "name": "Petrol Blue",
+    "rgbHex": "#037A9F",
+    "source": "beadcolors"
+  },
+  {
+    "code": "H84",
+    "name": "Olive Green",
+    "rgbHex": "#687836",
+    "source": "beadcolors"
+  },
+  {
+    "code": "H95",
+    "name": "Pastel Rose",
+    "rgbHex": "#DD9BA3",
+    "source": "beadcolors"
+  },
+  {
+    "code": "H96",
+    "name": "Pastel Lilac",
+    "rgbHex": "#B491AD",
+    "source": "beadcolors"
+  },
+  {
+    "code": "H97",
+    "name": "Pastel Ice Blue",
+    "rgbHex": "#8AAFC2",
+    "source": "beadcolors"
+  },
+  {
+    "code": "H98",
+    "name": "Pastel Mint",
+    "rgbHex": "#94CCA4",
+    "source": "beadcolors"
+  },
+  {
+    "code": "H15",
+    "name": "Transparent Blue",
+    "rgbHex": "#487ED5",
+    "source": "beadcolors"
+  },
+  {
+    "code": "H55",
+    "name": "Green (Glow in the Dark)",
+    "rgbHex": "#FAF8ED",
+    "source": "beadcolors"
+  },
+  {
+    "code": "H56",
+    "name": "Red (Glow in the Dark)",
+    "rgbHex": "#EDBF9F",
+    "source": "beadcolors"
+  },
+  {
+    "code": "H57",
+    "name": "Blue (Glow in the Dark)",
+    "rgbHex": "#C4D0E3",
+    "source": "beadcolors"
+  },
+  {
+    "code": "H61",
+    "name": "Gold",
+    "rgbHex": "#D99350",
+    "source": "beadcolors"
+  },
+  {
+    "code": "H62",
+    "name": "Silver",
+    "rgbHex": "#48474A",
+    "source": "beadcolors"
+  },
+  {
+    "code": "H63",
+    "name": "Bronze",
+    "rgbHex": "#42312F",
+    "source": "beadcolors"
+  },
+  {
+    "code": "H64",
+    "name": "Pearl",
+    "rgbHex": "#EFEBE4",
+    "source": "beadcolors"
+  },
+  {
+    "code": "H72",
+    "name": "Translucent Pink",
+    "rgbHex": "#F097B0",
+    "source": "beadcolors"
+  },
+  {
+    "code": "H73",
+    "name": "Translucent Aqua",
+    "rgbHex": "#59AEF5",
+    "source": "beadcolors"
+  },
+  {
+    "code": "H74",
+    "name": "Translucent Lilac",
+    "rgbHex": "#5B55BD",
+    "source": "beadcolors"
+  },
+  {
+    "code": "H101",
+    "name": "Eucalyptus",
+    "rgbHex": "#A9C39B",
+    "source": "beadcolors"
+  },
+  {
+    "code": "H102",
+    "name": "Forest Green",
+    "rgbHex": "#356B2D",
+    "source": "beadcolors"
+  },
+  {
+    "code": "H103",
+    "name": "Light Yellow",
+    "rgbHex": "#FFE660",
+    "source": "beadcolors"
+  },
+  {
+    "code": "H104",
+    "name": "Lime",
+    "rgbHex": "#BCD122",
+    "source": "beadcolors"
+  },
+  {
+    "code": "H105",
+    "name": "Light Apricot",
+    "rgbHex": "#FFAC78",
+    "source": "beadcolors"
+  },
+  {
+    "code": "H106",
+    "name": "Light Lavender",
+    "rgbHex": "#CCC5ED",
+    "source": "beadcolors"
+  },
+  {
+    "code": "H107",
+    "name": "Lavender",
+    "rgbHex": "#6A87C1",
+    "source": "beadcolors"
+  },
+  {
+    "code": "H108",
+    "name": "Aubergine",
+    "rgbHex": "#2A2536",
+    "source": "beadcolors"
+  },
+  {
+    "code": "H109",
+    "name": "Cloudy Grey",
+    "rgbHex": "#8A847F",
+    "source": "beadcolors"
+  },
+  {
+    "code": "H110",
+    "name": "Matcha",
+    "rgbHex": "#838956",
+    "source": "beadcolors"
+  },
+  {
+    "code": "H111",
+    "name": "Dark Blush",
+    "rgbHex": "#835854",
+    "source": "beadcolors"
+  },
+  {
+    "code": "H112",
+    "name": "Blush",
+    "rgbHex": "#AD8A82",
+    "source": "beadcolors"
+  },
+  {
+    "code": "H113",
+    "name": "Aqua",
+    "rgbHex": "#5F887B",
+    "source": "beadcolors"
+  },
+  {
+    "code": "H114",
+    "name": "Cherry Red",
+    "rgbHex": "#9A2C31",
+    "source": "beadcolors"
+  },
+  {
+    "code": "H115",
+    "name": "Bright Green",
+    "rgbHex": "#6E975F",
+    "source": "beadcolors"
+  },
+  {
+    "code": "H116",
+    "name": "Midnight Blue",
+    "rgbHex": "#222838",
+    "source": "beadcolors"
+  },
+  {
+    "code": "H117",
+    "name": "Taupe Grey",
+    "rgbHex": "#777169",
+    "source": "beadcolors"
+  },
+  {
+    "code": "H118",
+    "name": "Maroon Red",
+    "rgbHex": "#612932",
+    "source": "beadcolors"
+  },
+  {
+    "code": "H119",
+    "name": "Sky Blue",
+    "rgbHex": "#4167B4",
+    "source": "beadcolors"
+  }
+]

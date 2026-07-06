@@ -1,0 +1,19 @@
+{
+  "name": "pxlbeads",
+  "private": true,
+  "version": "1.0.0",
+  "description": "拼豆图纸智能生成与分享平台",
+  "packageManager": "pnpm@10.34.3",
+  "scripts": {
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "test": "turbo run test",
+    "lint": "turbo run lint"
+  },
+  "devDependencies": {
+    "turbo": "^2.0.0"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}

@@ -1,0 +1,24 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model ColorCard {
+  id            Int     @id @default(autoincrement())
+  brand         String
+  code          String
+  name          String?
+  rgbHex        String
+  labL          Float
+  labA          Float
+  labB          Float
+  source        String?
+  isApproximate Boolean @default(false)
+
+  @@unique([brand, code])
+  @@index([brand])
+}

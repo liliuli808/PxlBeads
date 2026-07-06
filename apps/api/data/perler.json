@@ -1,0 +1,620 @@
+[
+  {
+    "code": "80-15179",
+    "name": "Evergreen",
+    "rgbHex": "#305545",
+    "source": "beadcolors"
+  },
+  {
+    "code": "80-15181",
+    "name": "Light Grey",
+    "rgbHex": "#B3BAB8",
+    "source": "beadcolors"
+  },
+  {
+    "code": "80-15182",
+    "name": "Lavender",
+    "rgbHex": "#AF9FCE",
+    "source": "beadcolors"
+  },
+  {
+    "code": "80-15199",
+    "name": "Shamrock",
+    "rgbHex": "#008F53",
+    "source": "beadcolors"
+  },
+  {
+    "code": "80-15200",
+    "name": "Cobalt",
+    "rgbHex": "#0065B1",
+    "source": "beadcolors"
+  },
+  {
+    "code": "80-15201",
+    "name": "Midnight",
+    "rgbHex": "#2F3C55",
+    "source": "beadcolors"
+  },
+  {
+    "code": "80-15202",
+    "name": "Robin's Egg",
+    "rgbHex": "#A9CDD5",
+    "source": "beadcolors"
+  },
+  {
+    "code": "80-15203",
+    "name": "Flamingo",
+    "rgbHex": "#F2AFB7",
+    "source": "beadcolors"
+  },
+  {
+    "code": "80-15204",
+    "name": "Salmon",
+    "rgbHex": "#E1747A",
+    "source": "beadcolors"
+  },
+  {
+    "code": "80-15205",
+    "name": "Fawn",
+    "rgbHex": "#C9A385",
+    "source": "beadcolors"
+  },
+  {
+    "code": "80-15206",
+    "name": "Pewter",
+    "rgbHex": "#94A19D",
+    "source": "beadcolors"
+  },
+  {
+    "code": "80-15207",
+    "name": "Charcoal",
+    "rgbHex": "#4F595A",
+    "source": "beadcolors"
+  },
+  {
+    "code": "80-15208",
+    "name": "Toasted Marshmallow",
+    "rgbHex": "#DEDACE",
+    "source": "beadcolors"
+  },
+  {
+    "code": "80-15210",
+    "name": "Orchid",
+    "rgbHex": "#B1628E",
+    "source": "beadcolors"
+  },
+  {
+    "code": "80-15211",
+    "name": "Tomato",
+    "rgbHex": "#D14337",
+    "source": "beadcolors"
+  },
+  {
+    "code": "80-15212",
+    "name": "Spice",
+    "rgbHex": "#D9593A",
+    "source": "beadcolors"
+  },
+  {
+    "code": "80-15213",
+    "name": "Apricot",
+    "rgbHex": "#F5A168",
+    "source": "beadcolors"
+  },
+  {
+    "code": "80-15214",
+    "name": "Sherbet",
+    "rgbHex": "#D8E47C",
+    "source": "beadcolors"
+  },
+  {
+    "code": "80-15215",
+    "name": "Mist",
+    "rgbHex": "#93B0BD",
+    "source": "beadcolors"
+  },
+  {
+    "code": "80-15216",
+    "name": "Sky",
+    "rgbHex": "#4AC0D8",
+    "source": "beadcolors"
+  },
+  {
+    "code": "80-15217",
+    "name": "Lagoon",
+    "rgbHex": "#00A4AC",
+    "source": "beadcolors"
+  },
+  {
+    "code": "80-15218",
+    "name": "Teal",
+    "rgbHex": "#047F8A",
+    "source": "beadcolors"
+  },
+  {
+    "code": "80-15219",
+    "name": "Fern",
+    "rgbHex": "#7F971A",
+    "source": "beadcolors"
+  },
+  {
+    "code": "80-15220",
+    "name": "Olive",
+    "rgbHex": "#696E31",
+    "source": "beadcolors"
+  },
+  {
+    "code": "80-15961",
+    "name": "Cherry",
+    "rgbHex": "#9D2B3A",
+    "source": "beadcolors"
+  },
+  {
+    "code": "80-19001",
+    "name": "White",
+    "rgbHex": "#EAEFEE",
+    "source": "beadcolors"
+  },
+  {
+    "code": "80-19002",
+    "name": "Creme",
+    "rgbHex": "#E1E2BB",
+    "source": "beadcolors"
+  },
+  {
+    "code": "80-19003",
+    "name": "Yellow",
+    "rgbHex": "#E7CE3E",
+    "source": "beadcolors"
+  },
+  {
+    "code": "80-19004",
+    "name": "Orange",
+    "rgbHex": "#EB7B31",
+    "source": "beadcolors"
+  },
+  {
+    "code": "80-19005",
+    "name": "Red",
+    "rgbHex": "#B0353C",
+    "source": "beadcolors"
+  },
+  {
+    "code": "80-19006",
+    "name": "Bubblegum",
+    "rgbHex": "#D8729A",
+    "source": "beadcolors"
+  },
+  {
+    "code": "80-19007",
+    "name": "Purple",
+    "rgbHex": "#684B86",
+    "source": "beadcolors"
+  },
+  {
+    "code": "80-19008",
+    "name": "Dark Blue",
+    "rgbHex": "#0E5092",
+    "source": "beadcolors"
+  },
+  {
+    "code": "80-19009",
+    "name": "Light Blue",
+    "rgbHex": "#278CC9",
+    "source": "beadcolors"
+  },
+  {
+    "code": "80-19010",
+    "name": "Dark Green",
+    "rgbHex": "#007B4E",
+    "source": "beadcolors"
+  },
+  {
+    "code": "80-19011",
+    "name": "Light Green",
+    "rgbHex": "#18C7B1",
+    "source": "beadcolors"
+  },
+  {
+    "code": "80-19012",
+    "name": "Brown",
+    "rgbHex": "#674C44",
+    "source": "beadcolors"
+  },
+  {
+    "code": "80-19017",
+    "name": "Grey",
+    "rgbHex": "#909497",
+    "source": "beadcolors"
+  },
+  {
+    "code": "80-19018",
+    "name": "Black",
+    "rgbHex": "#323234",
+    "source": "beadcolors"
+  },
+  {
+    "code": "80-19020",
+    "name": "Rust",
+    "rgbHex": "#995043",
+    "source": "beadcolors"
+  },
+  {
+    "code": "80-19021",
+    "name": "Light Brown",
+    "rgbHex": "#936848",
+    "source": "beadcolors"
+  },
+  {
+    "code": "80-19033",
+    "name": "Peach",
+    "rgbHex": "#E9BFB9",
+    "source": "beadcolors"
+  },
+  {
+    "code": "80-19035",
+    "name": "Tan",
+    "rgbHex": "#C5AC90",
+    "source": "beadcolors"
+  },
+  {
+    "code": "80-19038",
+    "name": "Magenta",
+    "rgbHex": "#E04284",
+    "source": "beadcolors"
+  },
+  {
+    "code": "80-19052",
+    "name": "Pastel Blue",
+    "rgbHex": "#4A9CCF",
+    "source": "beadcolors"
+  },
+  {
+    "code": "80-19053",
+    "name": "Pastel Green",
+    "rgbHex": "#6DCC94",
+    "source": "beadcolors"
+  },
+  {
+    "code": "80-19054",
+    "name": "Pastel Lavender",
+    "rgbHex": "#937FBF",
+    "source": "beadcolors"
+  },
+  {
+    "code": "80-19056",
+    "name": "Pastel Yellow",
+    "rgbHex": "#E9E290",
+    "source": "beadcolors"
+  },
+  {
+    "code": "80-19057",
+    "name": "Cheddar",
+    "rgbHex": "#FBB146",
+    "source": "beadcolors"
+  },
+  {
+    "code": "80-19058",
+    "name": "Toothpaste",
+    "rgbHex": "#96D1D4",
+    "source": "beadcolors"
+  },
+  {
+    "code": "80-19059",
+    "name": "Hot Coral",
+    "rgbHex": "#DD595B",
+    "source": "beadcolors"
+  },
+  {
+    "code": "80-19060",
+    "name": "Plum",
+    "rgbHex": "#A75D9D",
+    "source": "beadcolors"
+  },
+  {
+    "code": "80-19061",
+    "name": "Kiwi Lime",
+    "rgbHex": "#69B845",
+    "source": "beadcolors"
+  },
+  {
+    "code": "80-19062",
+    "name": "Turquoise",
+    "rgbHex": "#0098C5",
+    "source": "beadcolors"
+  },
+  {
+    "code": "80-19063",
+    "name": "Blush",
+    "rgbHex": "#F99297",
+    "source": "beadcolors"
+  },
+  {
+    "code": "80-19070",
+    "name": "Periwinkle Blue",
+    "rgbHex": "#6683B7",
+    "source": "beadcolors"
+  },
+  {
+    "code": "80-19079",
+    "name": "Light Pink",
+    "rgbHex": "#E1BCCE",
+    "source": "beadcolors"
+  },
+  {
+    "code": "80-19080",
+    "name": "Green",
+    "rgbHex": "#4DAB64",
+    "source": "beadcolors"
+  },
+  {
+    "code": "80-19083",
+    "name": "Pink",
+    "rgbHex": "#D45496",
+    "source": "beadcolors"
+  },
+  {
+    "code": "80-19088",
+    "name": "Raspberry",
+    "rgbHex": "#983864",
+    "source": "beadcolors"
+  },
+  {
+    "code": "80-19090",
+    "name": "Butterscotch",
+    "rgbHex": "#DA9964",
+    "source": "beadcolors"
+  },
+  {
+    "code": "80-19091",
+    "name": "Parrot Green",
+    "rgbHex": "#009188",
+    "source": "beadcolors"
+  },
+  {
+    "code": "80-19092",
+    "name": "Dark Grey",
+    "rgbHex": "#585C61",
+    "source": "beadcolors"
+  },
+  {
+    "code": "80-19093",
+    "name": "Blueberry Creme",
+    "rgbHex": "#85A8E3",
+    "source": "beadcolors"
+  },
+  {
+    "code": "80-19096",
+    "name": "Cranapple",
+    "rgbHex": "#843947",
+    "source": "beadcolors"
+  },
+  {
+    "code": "80-19097",
+    "name": "Prickly Pear",
+    "rgbHex": "#BBC938",
+    "source": "beadcolors"
+  },
+  {
+    "code": "80-19098",
+    "name": "Sand",
+    "rgbHex": "#E5BE9E",
+    "source": "beadcolors"
+  },
+  {
+    "code": "80-15240",
+    "name": "Mint",
+    "rgbHex": "#B3EED5",
+    "source": "beadcolors"
+  },
+  {
+    "code": "80-15241",
+    "name": "Sour Apple",
+    "rgbHex": "#A3DE6F",
+    "source": "beadcolors"
+  },
+  {
+    "code": "80-15242",
+    "name": "Cotton Candy",
+    "rgbHex": "#F479B0",
+    "source": "beadcolors"
+  },
+  {
+    "code": "80-15243",
+    "name": "Grape",
+    "rgbHex": "#503B9C",
+    "source": "beadcolors"
+  },
+  {
+    "code": "80-15244",
+    "name": "Rose",
+    "rgbHex": "#D25D72",
+    "source": "beadcolors"
+  },
+  {
+    "code": "80-15245",
+    "name": "Iris",
+    "rgbHex": "#4E56A3",
+    "source": "beadcolors"
+  },
+  {
+    "code": "80-15246",
+    "name": "Tangerine",
+    "rgbHex": "#FD5918",
+    "source": "beadcolors"
+  },
+  {
+    "code": "80-15247",
+    "name": "Forest",
+    "rgbHex": "#005D57",
+    "source": "beadcolors"
+  },
+  {
+    "code": "80-15248",
+    "name": "Eggplant",
+    "rgbHex": "#6F3255",
+    "source": "beadcolors"
+  },
+  {
+    "code": "80-15249",
+    "name": "Honey",
+    "rgbHex": "#DA8C2C",
+    "source": "beadcolors"
+  },
+  {
+    "code": "80-15250",
+    "name": "Gingerbread",
+    "rgbHex": "#7E5446",
+    "source": "beadcolors"
+  },
+  {
+    "code": "80-15251",
+    "name": "Thistle",
+    "rgbHex": "#8C8CA7",
+    "source": "beadcolors"
+  },
+  {
+    "code": "80-15252",
+    "name": "Slate Blue",
+    "rgbHex": "#5E6D7B",
+    "source": "beadcolors"
+  },
+  {
+    "code": "80-15253",
+    "name": "Denim",
+    "rgbHex": "#4C6388",
+    "source": "beadcolors"
+  },
+  {
+    "code": "80-15254",
+    "name": "Sage",
+    "rgbHex": "#9AA98E",
+    "source": "beadcolors"
+  },
+  {
+    "code": "80-15255",
+    "name": "Orange Cream",
+    "rgbHex": "#EFB79B",
+    "source": "beadcolors"
+  },
+  {
+    "code": "80-15256",
+    "name": "Fruit Punch",
+    "rgbHex": "#CA3B65",
+    "source": "beadcolors"
+  },
+  {
+    "code": "80-15257",
+    "name": "Fuchsia",
+    "rgbHex": "#CB59B9",
+    "source": "beadcolors"
+  },
+  {
+    "code": "80-15258",
+    "name": "Mulberry",
+    "rgbHex": "#714875",
+    "source": "beadcolors"
+  },
+  {
+    "code": "80-15259",
+    "name": "Slime",
+    "rgbHex": "#C8C85C",
+    "source": "beadcolors"
+  },
+  {
+    "code": "80-15260",
+    "name": "Stone",
+    "rgbHex": "#988C8C",
+    "source": "beadcolors"
+  },
+  {
+    "code": "80-15261",
+    "name": "Dark Spruce",
+    "rgbHex": "#14313B",
+    "source": "beadcolors"
+  },
+  {
+    "code": "80-15262",
+    "name": "Cocoa",
+    "rgbHex": "#392928",
+    "source": "beadcolors"
+  },
+  {
+    "code": "80-15265",
+    "name": "Twilight Plum",
+    "rgbHex": "#C685B1",
+    "source": "beadcolors"
+  },
+  {
+    "code": "80-15266",
+    "name": "Caribbean Sea",
+    "rgbHex": "#6CC8AD",
+    "source": "beadcolors"
+  },
+  {
+    "code": "80-15267",
+    "name": "Frosted Lilac",
+    "rgbHex": "#CDB7C3",
+    "source": "beadcolors"
+  },
+  {
+    "code": "80-15273",
+    "name": "Brick",
+    "rgbHex": "#FC9574",
+    "source": "beadcolors"
+  },
+  {
+    "code": "80-15274",
+    "name": "Rich Butter",
+    "rgbHex": "#F6CA69",
+    "source": "beadcolors"
+  },
+  {
+    "code": "80-15275",
+    "name": "Peacock",
+    "rgbHex": "#0090AC",
+    "source": "beadcolors"
+  },
+  {
+    "code": "80-15276",
+    "name": "Carnation Pink",
+    "rgbHex": "#F8C7C9",
+    "source": "beadcolors"
+  },
+  {
+    "code": "80-15089",
+    "name": "Neon Blue",
+    "rgbHex": "#406AE1",
+    "source": "beadcolors"
+  },
+  {
+    "code": "80-15268",
+    "name": "Sunflower",
+    "rgbHex": "#DEBA0B",
+    "source": "beadcolors"
+  },
+  {
+    "code": "80-15269",
+    "name": "Lemon",
+    "rgbHex": "#F6D901",
+    "source": "beadcolors"
+  },
+  {
+    "code": "80-15263",
+    "name": "Celery",
+    "rgbHex": "#BED4A6",
+    "source": "beadcolors"
+  },
+  {
+    "code": "80-15239",
+    "name": "Mocha",
+    "rgbHex": "#C8B693",
+    "source": "beadcolors"
+  },
+  {
+    "code": "80-15272",
+    "name": "Coral",
+    "rgbHex": "#FF9A8B",
+    "source": "beadcolors"
+  }
+]

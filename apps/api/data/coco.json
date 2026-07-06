@@ -1,0 +1,17 @@
+[
+  { "code": "C01", "name": "White", "rgbHex": "#FFFFFF", "source": "community", "isApproximate": true },
+  { "code": "C02", "name": "Black", "rgbHex": "#1A1A1A", "source": "community", "isApproximate": true },
+  { "code": "C03", "name": "Red", "rgbHex": "#F44336", "source": "community", "isApproximate": true },
+  { "code": "C04", "name": "Orange", "rgbHex": "#FF9800", "source": "community", "isApproximate": true },
+  { "code": "C05", "name": "Yellow", "rgbHex": "#FFEB3B", "source": "community", "isApproximate": true },
+  { "code": "C06", "name": "Green", "rgbHex": "#4CAF50", "source": "community", "isApproximate": true },
+  { "code": "C07", "name": "Blue", "rgbHex": "#2196F3", "source": "community", "isApproximate": true },
+  { "code": "C08", "name": "Purple", "rgbHex": "#9C27B0", "source": "community", "isApproximate": true },
+  { "code": "C09", "name": "Pink", "rgbHex": "#E91E63", "source": "community", "isApproximate": true },
+  { "code": "C10", "name": "Brown", "rgbHex": "#795548", "source": "community", "isApproximate": true },
+  { "code": "C11", "name": "Grey", "rgbHex": "#9E9E9E", "source": "community", "isApproximate": true },
+  { "code": "C12", "name": "Beige", "rgbHex": "#F5F5DC", "source": "community", "isApproximate": true },
+  { "code": "C13", "name": "Cyan", "rgbHex": "#00BCD4", "source": "community", "isApproximate": true },
+  { "code": "C14", "name": "Light Pink", "rgbHex": "#F48FB1", "source": "community", "isApproximate": true },
+  { "code": "C15", "name": "Lime", "rgbHex": "#CDDC39", "source": "community", "isApproximate": true }
+]
