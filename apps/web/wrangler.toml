@@ -1,3 +1,14 @@
 name = "pxlbeads"
+main = "worker.ts"
 compatibility_date = "2026-07-06"
-pages_build_output_dir = "./dist"
+
+[vars]
+JIMENG_IMAGE_MODEL = "jimeng-image-5.0-lite"
+JIMENG_WEB_BASE_URL = "https://jimeng.jianying.com"
+JIMENG_POLL_INTERVAL_MS = "1000"
+JIMENG_MAX_POLL_RETRIES = "120"
+
+[assets]
+directory = "./dist"
+binding = "ASSETS"
+not_found_handling = "single-page-application"

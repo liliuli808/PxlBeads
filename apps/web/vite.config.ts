@@ -4,6 +4,11 @@ import tsconfigPaths from 'vite-tsconfig-paths';
 
 export default defineConfig({
   plugins: [react(), tsconfigPaths()],
+  resolve: {
+    alias: {
+      '@pxlbeads/shared': new URL('../../packages/shared/src/index.ts', import.meta.url).pathname,
+    },
+  },
   worker: {
     format: 'es',
   },
@@ -11,7 +16,7 @@ export default defineConfig({
     port: 5173,
     proxy: {
       '/api': {
-        target: 'http://localhost:3000',
+        target: 'http://localhost:8787',
         changeOrigin: true,
       },
     },

@@ -7,7 +7,7 @@ export interface KMeansResult {
 }
 
 function distanceSq(a: Lab, b: Lab): number {
-  return (a[0] - b[0]) ** 2 + (a[1] - b[1]) ** 2 + (a[2] - b[2]) ** 2;
+  return deltaE2000(a, b) ** 2;
 }
 
 function kMeansPlusPlus(pixels: Lab[], k: number): Lab[] {

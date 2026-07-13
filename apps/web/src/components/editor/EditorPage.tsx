@@ -1,5 +1,4 @@
-import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useProjectStore } from '../../store/projectStore';
 import { useBeadWorker } from '../../hooks/useBeadWorker';
 import { useColorCards } from '../../hooks/useColorCards';
@@ -8,35 +7,44 @@ import { PatternCanvas } from './PatternCanvas';
 import { PaletteList } from './PaletteList';
 import { BeadCountList } from './BeadCountList';
 import { AssemblyGuide } from './AssemblyGuide';
-import { ProcessConfig } from '@pxlbeads/shared';
+import { ColorCorrectionPanel } from './ColorCorrectionPanel';
+import { JimengRedrawPanel } from './JimengRedrawPanel';
+import type { JimengRedrawRecommendation } from './JimengRedrawPanel';
+import { BrandColor, createProcessConfigForMode, PipelineOutput, ProcessConfig } from '@pxlbeads/shared';
+import { applyColorReplacements, ColorReplacementMap } from '../../engine/colorReplacement';
+import { renderPattern } from '../../engine/renderPattern';
 
 const BRANDS = ['perler', 'hama', 'mard', 'coco', 'manman'];
 
+function renderOutputPreview(result: PipelineOutput, beadStyle: ProcessConfig['beadStyle']): ImageData {
+  const canvas = renderPattern(result.grid, result.width, result.height, {
+    cellSize: 28,
+    showGrid: true,
+    showCodes: false,
+    showLabels: false,
+    beadStyle: beadStyle ?? 'square',
+    bgColor: '#F5E6C8',
+  });
+  const ctx = canvas.getContext('2d')!;
+  return ctx.getImageData(0, 0, canvas.width, canvas.height);
+}
+
 export function EditorPage() {
-  const navigate = useNavigate();
   const imageData = useProjectStore((s) => s.imageData);
+  const setImageData = useProjectStore((s) => s.setImageData);
   const setResult = useProjectStore((s) => s.setResult);
 
-  const [config, setConfig] = useState<ProcessConfig>({
-    width: 29,
-    height: 29,
-    brand: 'perler',
-    maxColors: 16,
-    mode: 'smart',
-    removeBackground: false,
-    backgroundColor: '#ffffff',
-    backgroundThreshold: 40,
-  });
+  const [config, setConfig] = useState<ProcessConfig>(() => createProcessConfigForMode('pattern', 'mard'));
+  const [colorReplacements, setColorReplacements] = useState<ColorReplacementMap>({});
 
   const worker = useBeadWorker();
   const { data: palette, isLoading: isPaletteLoading } = useColorCards(config.brand);
+  const autoProcessedImageRef = useRef<ImageData | null>(null);
 
   useEffect(() => {
-    if (!imageData) {
-      navigate('/');
-      return;
+    if (imageData) {
+      worker.loadImageFromData(imageData);
     }
-    worker.loadImageFromData(imageData);
   }, [imageData]);
 
   useEffect(() => {
@@ -45,11 +53,31 @@ export function EditorPage() {
     }
   }, [palette]);
 
+  const displayResult = useMemo(() => {
+    if (!worker.result) return null;
+    const replaced = applyColorReplacements(worker.result, colorReplacements);
+    if (replaced === worker.result) return worker.result;
+    return {
+      ...replaced,
+      preview: renderOutputPreview(replaced, config.beadStyle),
+    };
+  }, [worker.result, colorReplacements, config.beadStyle]);
+
   useEffect(() => {
-    if (worker.result) {
-      setResult(worker.result);
-    }
-  }, [worker.result, setResult]);
+    setColorReplacements({});
+  }, [worker.result]);
+
+  useEffect(() => {
+    setResult(displayResult);
+  }, [displayResult, setResult]);
+
+  useEffect(() => {
+    if (!imageData || !palette || autoProcessedImageRef.current === imageData) return;
+    autoProcessedImageRef.current = imageData;
+    worker.process(config).catch(() => {
+      autoProcessedImageRef.current = null;
+    });
+  }, [imageData, palette]);
 
   const handleRun = async () => {
     if (!palette) return;
@@ -59,17 +87,36 @@ export function EditorPage() {
   const handleRequantize = async (updates: Partial<ProcessConfig>) => {
     const next = { ...config, ...updates };
     setConfig(next);
+    setColorReplacements({});
     if (!palette) return;
     await worker.process(next);
   };
 
+  const handleColorReplace = (sourceKey: string, target: BrandColor) => {
+    setColorReplacements((current) => ({
+      ...current,
+      [sourceKey]: target,
+    }));
+  };
+
+  const handleJimengApply = (
+    nextImageData: ImageData,
+    recommendation: JimengRedrawRecommendation,
+  ) => {
+    const recommendedConfig: ProcessConfig = {
+      ...createProcessConfigForMode(recommendation.patternMode, config.brand),
+      ...recommendation.updates,
+      brand: config.brand,
+      beadStyle: config.beadStyle ?? 'square',
+    };
+
+    setConfig(recommendedConfig);
+    setColorReplacements({});
+    setImageData(nextImageData);
+  };
+
   const [activeTab, setActiveTab] = useState<'preview' | 'assembly'>('preview');
   const [isLeftCollapsed, setIsLeftCollapsed] = useState(false);
-
-  if (!imageData) {
-    return null;
-  }
-
   return (
     <div className="p-2 lg:p-6 h-full">
       <div className="flex flex-col lg:flex-row gap-2 lg:gap-6 h-full">
@@ -100,11 +147,23 @@ export function EditorPage() {
                 isLoading={worker.isProcessing || isPaletteLoading}
                 progress={worker.progress}
               />
+              <JimengRedrawPanel
+                imageData={imageData}
+                disabled={worker.isProcessing}
+                onApply={handleJimengApply}
+              />
               {worker.error && (
                 <div className="p-3 bg-red-50 text-red-700 rounded-md text-sm">{worker.error}</div>
               )}
-              {worker.result && <PaletteList palette={worker.result.palette} />}
-              <BeadCountList stats={worker.result?.stats} />
+              <ColorCorrectionPanel
+                result={displayResult}
+                palette={palette}
+                replacements={colorReplacements}
+                onReplace={handleColorReplace}
+                onReset={() => setColorReplacements({})}
+              />
+              {displayResult && <PaletteList palette={displayResult.palette} />}
+              <BeadCountList stats={displayResult?.stats} />
             </>
           )}
         </aside>
@@ -144,18 +203,28 @@ export function EditorPage() {
                   : 'text-gray-600 hover:bg-gray-50',
               ].join(' ')}
             >
-              分步拼装
+              拼图助手
             </button>
           </div>
 
           <div className="flex-1 overflow-auto p-2 lg:p-4">
             {activeTab === 'preview' && (
               <div className="h-full flex items-center justify-center">
-                <PatternCanvas result={worker.result} />
+                {displayResult ? (
+                  <PatternCanvas result={displayResult} />
+                ) : (
+                  <div className="text-center text-gray-500">
+                    <p className="text-lg mb-2">暂无预览</p>
+                    <p className="text-sm">
+                      <a href="/" className="text-indigo-600 hover:underline">上传图片</a>
+                      后生成图纸
+                    </p>
+                  </div>
+                )}
               </div>
             )}
-            {activeTab === 'assembly' && worker.result && (
-              <AssemblyGuide result={worker.result} compact />
+            {activeTab === 'assembly' && displayResult && (
+              <AssemblyGuide result={displayResult} compact />
             )}
           </div>
         </div>

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { runPipeline } from '../../src/engine/pipeline';
+import { runPipeline, subjectFill } from '../../src/engine/pipeline';
 import { BrandColor } from '@pxlbeads/shared';
 
 if (typeof ImageData === 'undefined') {
@@ -72,9 +72,35 @@ function createImageData(width: number, height: number, r: number, g: number, b:
   return new ImageData(data, width, height);
 }
 
+function createTransparentImageData(width: number, height: number): ImageData {
+  return new ImageData(new Uint8ClampedArray(width * height * 4), width, height);
+}
+
 describe('runPipeline integration', () => {
   const red: BrandColor = { brand: 'TEST', code: 'R', rgb: [255, 0, 0], lab: [53.24, 80.09, 67.20] };
   const blue: BrandColor = { brand: 'TEST', code: 'B', rgb: [0, 0, 255], lab: [32.30, 79.19, -107.86] };
+
+  it('subjectFill crops transparent background and scales foreground into the target canvas', () => {
+    const imageData = createTransparentImageData(8, 8);
+    for (let y = 3; y <= 4; y++) {
+      for (let x = 3; x <= 4; x++) {
+        const idx = (y * imageData.width + x) * 4;
+        imageData.data[idx] = 255;
+        imageData.data[idx + 3] = 255;
+      }
+    }
+
+    const result = subjectFill(imageData, 10, 0.1);
+    let foreground = 0;
+    for (let i = 3; i < result.data.length; i += 4) {
+      if (result.data[i] >= 128) foreground++;
+    }
+
+    expect(result.width).toBe(10);
+    expect(result.height).toBe(10);
+    expect(foreground).toBe(64);
+    expect(result.data[3]).toBe(0);
+  });
 
   it('processes a 29x29 image with a two-color palette', async () => {
     const imageData = createImageData(100, 100, 255, 0, 0);
@@ -111,6 +137,34 @@ describe('runPipeline integration', () => {
     );
 
     expect(result.palette.length).toBeLessThanOrEqual(1);
-    expect(result.grid.every((c) => c.code === result.palette[0].code)).toBe(true);
+    expect(result.stats.total).toBe(10 * 10);
+    expect(result.grid.filter(Boolean).every((c) => c!.code === result.palette[0].code)).toBe(true);
+  });
+
+  it('keeps small real color patches in default pattern mode', async () => {
+    const imageData = createImageData(80, 80, 255, 0, 0);
+    for (let y = 39; y <= 40; y++) {
+      for (let x = 39; x <= 40; x++) {
+        const idx = (y * imageData.width + x) * 4;
+        imageData.data[idx] = 0;
+        imageData.data[idx + 1] = 0;
+        imageData.data[idx + 2] = 255;
+      }
+    }
+
+    const result = await runPipeline(
+      {
+        imageData,
+        width: 80,
+        height: 80,
+        brand: 'TEST',
+        maxColors: 2,
+        mode: 'fast',
+      },
+      [red, blue]
+    );
+
+    expect(result.stats.total).toBe(80 * 80);
+    expect(result.stats.counts['TEST:B']).toBe(4);
   });
 });

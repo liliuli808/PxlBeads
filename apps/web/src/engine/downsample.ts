@@ -67,3 +67,65 @@ export function downsample(imageData: ImageData, targetW: number, targetH: numbe
 
   return result;
 }
+
+export function modeDownsample(
+  imageData: ImageData,
+  targetW: number,
+  targetH: number,
+  fgThreshold = 0.4,
+  quantizationMask = 0xf8
+): (RGB | null)[][] {
+  const { width, height, data } = imageData;
+  const grid: (RGB | null)[][] = [];
+
+  const cellW = width / targetW;
+  const cellH = height / targetH;
+
+  for (let gy = 0; gy < targetH; gy++) {
+    const row: (RGB | null)[] = [];
+    for (let gx = 0; gx < targetW; gx++) {
+      const counter = new Map<string, { c: RGB; n: number }>();
+      let fg = 0;
+      let total = 0;
+
+      const yStart = Math.floor(gy * cellH);
+      const yEnd = Math.min(height, Math.floor((gy + 1) * cellH));
+      const xStart = Math.floor(gx * cellW);
+      const xEnd = Math.min(width, Math.floor((gx + 1) * cellW));
+
+      for (let y = yStart; y < yEnd; y++) {
+        for (let x = xStart; x < xEnd; x++) {
+          const idx = (y * width + x) * 4;
+          total++;
+          if (data[idx + 3] < 128) continue;
+          fg++;
+          const r = data[idx] & quantizationMask;
+          const g = data[idx + 1] & quantizationMask;
+          const b = data[idx + 2] & quantizationMask;
+          const key = `${r},${g},${b}`;
+          const hit = counter.get(key);
+          if (hit) hit.n++;
+          else counter.set(key, { c: [r, g, b], n: 1 });
+        }
+      }
+
+      if (total === 0 || fg / total < fgThreshold) {
+        row.push(null);
+        continue;
+      }
+
+      let best: RGB | null = null;
+      let max = -1;
+      counter.forEach((v) => {
+        if (v.n > max) {
+          max = v.n;
+          best = v.c;
+        }
+      });
+      row.push(best);
+    }
+    grid.push(row);
+  }
+
+  return grid;
+}

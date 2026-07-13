@@ -23,6 +23,12 @@ export function BeadCountList({ stats }: BeadCountListProps) {
         总豆数：<span className="font-medium text-gray-900">{stats.total}</span>
         ，实际使用色数：
         <span className="font-medium text-gray-900">{stats.actualColors}</span>
+        {stats.avgDeltaE !== undefined && (
+          <>
+            ，还原度评分 ΔE ≈{' '}
+            <span className="font-medium text-gray-900">{stats.avgDeltaE.toFixed(2)}</span>
+          </>
+        )}
       </div>
       <ul className="divide-y divide-gray-100 max-h-64 overflow-auto">
         {entries.map(([key, count]) => (

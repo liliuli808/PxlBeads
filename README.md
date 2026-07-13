@@ -5,8 +5,9 @@
 ## 技术栈
 
 - **前端**：React 18 + TypeScript + Vite + Tailwind CSS + Zustand + TanStack Query
-- **算法引擎**：前端 Web Worker（CIELAB + CIEDE2000、K-means、双边滤波、下采样、孤点清理）
+- **算法引擎**：前端 Web Worker（CIELAB + CIEDE2000、K-means、双边滤波、众数下采样、孤点清理）
 - **后端**：Fastify 4 + Prisma + SQLite
+- **边缘接口**：Cloudflare Worker（静态资源、AI 生图接口、/api/segment 抠图代理）
 - **测试**：Vitest
 
 ## 快速开始
@@ -23,6 +24,25 @@ pnpm --filter @pxlbeads/api exec prisma db seed
 pnpm --filter @pxlbeads/api dev      # API: http://localhost:3000
 pnpm --filter @pxlbeads/web dev      # Web: http://localhost:5173
 ```
+
+## 路线三抠图配置
+
+照片转拼豆主流程不依赖生成式 AI 出最终图纸：抠图后由浏览器本地的确定性算法完成裁切留边、双边滤波、众数下采样、K-means 减色和 CIEDE2000 色号匹配。
+
+默认抠图走 remove.bg 代理，密钥只通过 Wrangler secret 注入：
+
+```bash
+cd apps/web
+pnpm exec wrangler secret put REMOVE_BG_API_KEY
+```
+
+兼容旧名 `REMOVEBG_KEY`。如果要改走 Workers AI 自建分割，需要配置返回 `{ width, height, mask }` 的模型名：
+
+```bash
+pnpm exec wrangler secret put SEGMENT_MODEL
+```
+
+本地 Vite 调试时可复制 `apps/web/.env.example`，让前端把 `/api/segment` 转到 `wrangler dev`。
 
 ## 功能
 
@@ -54,6 +74,7 @@ pnpm run test
 ## 说明
 
 - 核心颜色匹配完全在前端 Web Worker 中运行，使用 CIELAB 空间与 CIEDE2000 色差公式，禁用 RGB 欧氏距离。
+- 照片预处理会裁切 alpha 前景，并在网格边缘保留透明留边，避免主体贴边。
 - **Perler / Hama / MARD**：色卡数据来自开源项目 [maxcleme/beadcolors](https://github.com/maxcleme/beadcolors)（通过 GitHub API 抓取并转换）。
 - **COCO / 漫漫**：当前网络环境下未能找到公开完整数据源，仍使用社区近似值，已标记 `isApproximate: true`，后续可替换为官方精确数据。
 # PxlBeads

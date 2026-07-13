@@ -1,100 +1,279 @@
-import { BrandColor, PipelineInput, PipelineOutput } from '@pxlbeads/shared';
-import { bilateralFilter } from './bilateral';
-import { cleanIsolatedPoints } from './cleanIsolatedPoints';
-import { downsample, downsampleAlpha } from './downsample';
+import { BrandColor, PATTERN_MODE_CONFIG, PatternMode, PatternModeConfig, PipelineInput, PipelineOutput } from '@pxlbeads/shared';
+import { modeDownsample } from './downsample';
+import { enhanceEdges, floodFillBackground, posterize } from './photoProcessing';
+import { QuantizeOptions } from './quantizeToBrand';
 import { quantizeToBrand } from './quantizeToBrand';
 import { renderPattern } from './renderPattern';
-import { hexToRgb } from './colorSpace';
 
-function hasTransparency(imageData: ImageData): boolean {
-  const { data } = imageData;
-  for (let i = 3; i < data.length; i += 4) {
-    if (data[i] < 255) return true;
+const WORK_SCALE = 4;
+
+function getForegroundBounds(imageData: ImageData): { minX: number; minY: number; maxX: number; maxY: number } | null {
+  const { width, height, data } = imageData;
+  let minX = width;
+  let minY = height;
+  let maxX = 0;
+  let maxY = 0;
+
+  for (let y = 0; y < height; y++) {
+    for (let x = 0; x < width; x++) {
+      const idx = (y * width + x) * 4;
+      if (data[idx + 3] >= 128) {
+        minX = Math.min(minX, x);
+        minY = Math.min(minY, y);
+        maxX = Math.max(maxX, x);
+        maxY = Math.max(maxY, y);
+      }
+    }
   }
-  return false;
+
+  if (minX > maxX || minY > maxY) {
+    return null;
+  }
+
+  return { minX, minY, maxX, maxY };
 }
 
-function fitImageToSize(
-  imageData: ImageData,
-  targetW: number,
-  targetH: number,
-  transparentFill: boolean
-): ImageData {
-  const output = new ImageData(targetW, targetH);
-  const bg = transparentFill ? [255, 255, 255, 0] : [...hexToRgb('#ffffff'), 255];
+function trimForeground(imageData: ImageData): ImageData {
+  const bounds = getForegroundBounds(imageData);
+  if (!bounds) return imageData;
 
-  for (let i = 0; i < targetW * targetH; i++) {
-    output.data[i * 4] = bg[0];
-    output.data[i * 4 + 1] = bg[1];
-    output.data[i * 4 + 2] = bg[2];
-    output.data[i * 4 + 3] = bg[3];
+  const { width, data } = imageData;
+  const { minX, minY, maxX, maxY } = bounds;
+  const cropW = maxX - minX + 1;
+  const cropH = maxY - minY + 1;
+  const output = new ImageData(cropW, cropH);
+  output.data.fill(0);
+
+  for (let y = 0; y < cropH; y++) {
+    for (let x = 0; x < cropW; x++) {
+      const srcIdx = ((minY + y) * width + (minX + x)) * 4;
+      const dstIdx = (y * cropW + x) * 4;
+      output.data[dstIdx] = data[srcIdx];
+      output.data[dstIdx + 1] = data[srcIdx + 1];
+      output.data[dstIdx + 2] = data[srcIdx + 2];
+      output.data[dstIdx + 3] = data[srcIdx + 3];
+    }
   }
 
-  const scale = Math.min(targetW / imageData.width, targetH / imageData.height);
-  const drawW = Math.round(imageData.width * scale);
-  const drawH = Math.round(imageData.height * scale);
+  return output;
+}
+
+function resizeCropManual(src: ImageData, targetSize: number, padPx: number): ImageData {
+  const output = new ImageData(targetSize, targetSize);
+  output.data.fill(0);
+
+  const inner = Math.max(1, targetSize - padPx * 2);
+  const scale = Math.max(inner / src.width, inner / src.height);
+  const drawW = Math.max(1, Math.round(src.width * scale));
+  const drawH = Math.max(1, Math.round(src.height * scale));
+  const offsetX = padPx + Math.floor((inner - drawW) / 2);
+  const offsetY = padPx + Math.floor((inner - drawH) / 2);
+
+  for (let y = padPx; y < targetSize - padPx; y++) {
+    for (let x = padPx; x < targetSize - padPx; x++) {
+      const srcX = Math.floor((x - offsetX) / scale);
+      const srcY = Math.floor((y - offsetY) / scale);
+      if (srcX < 0 || srcY < 0 || srcX >= src.width || srcY >= src.height) {
+        continue;
+      }
+      const srcIdx = (srcY * src.width + srcX) * 4;
+      const dstIdx = (y * targetSize + x) * 4;
+      output.data[dstIdx] = src.data[srcIdx];
+      output.data[dstIdx + 1] = src.data[srcIdx + 1];
+      output.data[dstIdx + 2] = src.data[srcIdx + 2];
+      output.data[dstIdx + 3] = src.data[srcIdx + 3];
+    }
+  }
+
+  return output;
+}
+
+function drawImageDataToCanvas(
+  src: ImageData,
+  targetW: number,
+  targetH: number,
+  fit: 'cover' | 'contain',
+  fill: [number, number, number, number] = [255, 255, 255, 255]
+): ImageData {
+  if (typeof OffscreenCanvas === 'undefined') {
+    return resizeImageDataManual(src, targetW, targetH, fit, fill);
+  }
+
+  const canvas = new OffscreenCanvas(targetW, targetH);
+  const ctx = canvas.getContext('2d')!;
+  ctx.fillStyle = `rgba(${fill[0]}, ${fill[1]}, ${fill[2]}, ${fill[3] / 255})`;
+  ctx.fillRect(0, 0, targetW, targetH);
+  ctx.imageSmoothingEnabled = true;
+  ctx.imageSmoothingQuality = 'high';
+
+  const scale =
+    fit === 'cover'
+      ? Math.max(targetW / src.width, targetH / src.height)
+      : Math.min(targetW / src.width, targetH / src.height);
+  const drawW = Math.max(1, Math.round(src.width * scale));
+  const drawH = Math.max(1, Math.round(src.height * scale));
   const offsetX = Math.floor((targetW - drawW) / 2);
   const offsetY = Math.floor((targetH - drawH) / 2);
 
-  for (let y = 0; y < drawH; y++) {
-    for (let x = 0; x < drawW; x++) {
-      const srcX = Math.min(imageData.width - 1, Math.round(x / scale));
-      const srcY = Math.min(imageData.height - 1, Math.round(y / scale));
-      const srcIdx = (srcY * imageData.width + srcX) * 4;
-      const dstIdx = ((offsetY + y) * targetW + (offsetX + x)) * 4;
-      output.data[dstIdx] = imageData.data[srcIdx];
-      output.data[dstIdx + 1] = imageData.data[srcIdx + 1];
-      output.data[dstIdx + 2] = imageData.data[srcIdx + 2];
-      output.data[dstIdx + 3] = imageData.data[srcIdx + 3];
-    }
-  }
-
-  return output;
+  const srcCanvas = new OffscreenCanvas(src.width, src.height);
+  const srcCtx = srcCanvas.getContext('2d')!;
+  srcCtx.putImageData(src, 0, 0);
+  ctx.drawImage(srcCanvas, offsetX, offsetY, drawW, drawH);
+  return ctx.getImageData(0, 0, targetW, targetH);
 }
 
-function removeBackgroundColor(
-  imageData: ImageData,
-  bgColorHex: string,
-  threshold: number
+function resizeImageDataManual(
+  src: ImageData,
+  targetW: number,
+  targetH: number,
+  fit: 'cover' | 'contain',
+  fill: [number, number, number, number]
 ): ImageData {
-  const output = new ImageData(imageData.width, imageData.height);
-  output.data.set(imageData.data);
-  const bg = hexToRgb(bgColorHex);
+  const output = new ImageData(targetW, targetH);
+  for (let i = 0; i < targetW * targetH; i++) {
+    output.data[i * 4] = fill[0];
+    output.data[i * 4 + 1] = fill[1];
+    output.data[i * 4 + 2] = fill[2];
+    output.data[i * 4 + 3] = fill[3];
+  }
 
-  for (let i = 0; i < imageData.width * imageData.height; i++) {
-    const idx = i * 4;
-    const r = imageData.data[idx];
-    const g = imageData.data[idx + 1];
-    const b = imageData.data[idx + 2];
+  const scale =
+    fit === 'cover'
+      ? Math.max(targetW / src.width, targetH / src.height)
+      : Math.min(targetW / src.width, targetH / src.height);
+  const drawW = Math.max(1, Math.round(src.width * scale));
+  const drawH = Math.max(1, Math.round(src.height * scale));
+  const offsetX = Math.floor((targetW - drawW) / 2);
+  const offsetY = Math.floor((targetH - drawH) / 2);
 
-    const dist = Math.sqrt(
-      (r - bg[0]) ** 2 +
-      (g - bg[1]) ** 2 +
-      (b - bg[2]) ** 2
-    );
-
-    if (dist <= threshold) {
-      output.data[idx + 3] = 0;
+  for (let y = 0; y < targetH; y++) {
+    for (let x = 0; x < targetW; x++) {
+      const srcX = Math.floor((x - offsetX) / scale);
+      const srcY = Math.floor((y - offsetY) / scale);
+      if (srcX < 0 || srcY < 0 || srcX >= src.width || srcY >= src.height) continue;
+      const srcIdx = (srcY * src.width + srcX) * 4;
+      const dstIdx = (y * targetW + x) * 4;
+      output.data[dstIdx] = src.data[srcIdx];
+      output.data[dstIdx + 1] = src.data[srcIdx + 1];
+      output.data[dstIdx + 2] = src.data[srcIdx + 2];
+      output.data[dstIdx + 3] = src.data[srcIdx + 3];
     }
   }
 
   return output;
 }
 
-function computeStats(grid: (BrandColor | null)[]): { counts: Record<string, number>; total: number; actualColors: number } {
-  const counts: Record<string, number> = {};
-  const usedSet = new Map<string, BrandColor>();
-  let total = 0;
+export function subjectFill(src: ImageData, targetSize: number, padRatio = 0.04): ImageData {
+  const cropped = trimForeground(src);
+  const padPx = Math.max(0, Math.floor(targetSize * padRatio));
 
-  for (const color of grid) {
-    if (!color) continue;
-    const key = `${color.brand}:${color.code}`;
-    counts[key] = (counts[key] || 0) + 1;
-    usedSet.set(key, color);
-    total++;
+  if (typeof OffscreenCanvas === 'undefined') {
+    return resizeCropManual(cropped, targetSize, padPx);
   }
 
-  return { counts, total, actualColors: usedSet.size };
+  const inner = Math.max(1, targetSize - padPx * 2);
+  const scale = Math.max(inner / cropped.width, inner / cropped.height);
+  const drawW = Math.max(1, Math.round(cropped.width * scale));
+  const drawH = Math.max(1, Math.round(cropped.height * scale));
+  const offsetX = padPx + Math.floor((inner - drawW) / 2);
+  const offsetY = padPx + Math.floor((inner - drawH) / 2);
+
+  const canvas = new OffscreenCanvas(targetSize, targetSize);
+  const ctx = canvas.getContext('2d')!;
+  ctx.clearRect(0, 0, targetSize, targetSize);
+  ctx.imageSmoothingEnabled = true;
+  ctx.imageSmoothingQuality = 'high';
+
+  const srcCanvas = new OffscreenCanvas(cropped.width, cropped.height);
+  const srcCtx = srcCanvas.getContext('2d')!;
+  srcCtx.putImageData(cropped, 0, 0);
+  ctx.drawImage(srcCanvas, offsetX, offsetY, drawW, drawH);
+
+  return ctx.getImageData(0, 0, targetSize, targetSize);
+}
+
+function resolvePatternMode(patternMode: PatternMode | undefined): PatternMode {
+  return patternMode ?? 'pattern';
+}
+
+export function prepareFullImageCanvas(input: PipelineInput): ImageData {
+  return drawImageDataToCanvas(input.imageData, input.width * WORK_SCALE, input.height * WORK_SCALE, 'cover');
+}
+
+export function prepareSubjectCanvas(input: PipelineInput): ImageData {
+  let processed = input.imageData;
+
+  if (input.floodFillBackground) {
+    processed = floodFillBackground(processed, input.backgroundTolerance ?? 32);
+  }
+
+  return subjectFill(
+    processed,
+    Math.max(input.width, input.height) * WORK_SCALE,
+    input.detailEnhance ? 0.02 : 0.04
+  );
+}
+
+export function preprocessStable(input: ImageData, config: PipelineInput, preset: PatternModeConfig): ImageData {
+  let processed = input;
+  const posterizeLevels = config.posterizeLevels ?? preset.posterizeLevels;
+
+  if (posterizeLevels > 0) {
+    processed = posterize(processed, posterizeLevels);
+  }
+
+  const edgeThreshold = config.edgeThreshold ?? preset.edgeThreshold;
+  const edgeDarken = config.edgeDarken ?? preset.edgeDarken;
+  if (config.mode === 'smart' && edgeThreshold !== undefined && edgeDarken !== undefined) {
+    processed = enhanceEdges(processed, edgeThreshold, edgeDarken);
+  }
+
+  return processed;
+}
+
+export function sampleGrid(input: ImageData, config: PipelineInput, preset: PatternModeConfig) {
+  return modeDownsample(
+    input,
+    config.width,
+    config.height,
+    config.fgThreshold ?? preset.fgThreshold,
+    config.quantizationMask ?? preset.quantizationMask
+  );
+}
+
+export function quantizeGrid(
+  grid: ReturnType<typeof sampleGrid>,
+  palette: BrandColor[],
+  config: PipelineInput,
+  preset: PatternModeConfig
+) {
+  const options: QuantizeOptions = {};
+  const ditherStrength = config.ditherStrength ?? preset.ditherStrength;
+  const confettiMinRatio = config.confettiMinRatio ?? preset.confettiMinRatio;
+
+  if (config.dither === true && ditherStrength > 0) {
+    options.dither = true;
+    options.ditherStrength = ditherStrength;
+  }
+
+  if (confettiMinRatio > 0) {
+    options.confettiMinRatio = confettiMinRatio;
+  }
+
+  return quantizeToBrand(grid, palette, config.maxColors ?? preset.maxColors, options);
+}
+
+export function renderPreview(input: PipelineInput, grid: PipelineOutput['grid']): ImageData {
+  const canvas = renderPattern(grid, input.width, input.height, {
+    cellSize: 28,
+    showGrid: true,
+    showCodes: false,
+    showLabels: false,
+    beadStyle: input.beadStyle ?? 'square',
+    bgColor: '#F5E6C8',
+  });
+  const ctx = canvas.getContext('2d')!;
+  return ctx.getImageData(0, 0, canvas.width, canvas.height);
 }
 
 export async function runPipeline(
@@ -102,48 +281,28 @@ export async function runPipeline(
   palette: BrandColor[],
   onProgress?: (phase: string, percent: number) => void
 ): Promise<PipelineOutput> {
-  const { imageData, width, height, maxColors, mode } = input;
-  const shouldRemoveBackground = !!(input.removeBackground && input.backgroundColor);
-  const transparentFill = hasTransparency(imageData) || shouldRemoveBackground;
+  const patternMode = resolvePatternMode(input.patternMode);
+  const preset = PATTERN_MODE_CONFIG[patternMode];
 
   onProgress?.('预处理', 0.1);
-  let processed = imageData;
-  if (mode === 'smart') {
-    processed = bilateralFilter(imageData, 2, 40, (p) => onProgress?.('预处理', 0.1 + p * 0.2));
-  }
+  const prepared = preset.subjectFill ? prepareSubjectCanvas(input) : prepareFullImageCanvas(input);
+  const processed = preprocessStable(prepared, input, preset);
 
   onProgress?.('下采样', 0.3);
-  let fitted = fitImageToSize(processed, width, height, transparentFill);
-  if (shouldRemoveBackground) {
-    fitted = removeBackgroundColor(fitted, input.backgroundColor!, input.backgroundThreshold ?? 40);
-  }
-  const pixels = downsample(fitted, width, height);
-  const alpha = downsampleAlpha(fitted, width, height);
+  const grid = sampleGrid(processed, input, preset);
 
   onProgress?.('量化', 0.5);
-  const { grid, usedPalette } = quantizeToBrand(pixels, palette, maxColors, mode, alpha);
-
-  onProgress?.('清理孤点', 0.8);
-  const cleaned = cleanIsolatedPoints(grid, width, height, 2);
+  const { grid: flatGrid, usedPalette, stats } = quantizeGrid(grid, palette, input, preset);
 
   onProgress?.('渲染', 0.95);
-  const canvas = renderPattern(cleaned, width, height, {
-    cellSize: 28,
-    showGrid: true,
-    showCodes: false,
-    showLabels: true,
-  });
-  const ctx = canvas.getContext('2d')!;
-  const preview = ctx.getImageData(0, 0, canvas.width, canvas.height);
+  const preview = renderPreview(input, flatGrid);
 
   onProgress?.('完成', 1);
 
-  const stats = computeStats(cleaned);
-
   return {
-    grid: cleaned,
-    width,
-    height,
+    grid: flatGrid,
+    width: input.width,
+    height: input.height,
     palette: usedPalette,
     stats,
     preview,

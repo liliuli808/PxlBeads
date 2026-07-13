@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { BrandColor, PipelineOutput, ProcessConfig, WorkerResponse } from '@pxlbeads/shared';
+import { BrandColor, PipelineOutput, ProcessConfig, RenderOptions, WorkerResponse } from '@pxlbeads/shared';
 
 export interface UseBeadWorkerReturn {
   isProcessing: boolean;
@@ -11,12 +11,13 @@ export interface UseBeadWorkerReturn {
   setPalette: (palette: BrandColor[]) => Promise<void>;
   process: (config: ProcessConfig) => Promise<void>;
   requantize: (brand: string, maxColors: number, mode: 'fast' | 'smart') => Promise<void>;
+  exportPreview: (options: RenderOptions) => Promise<Blob>;
 }
 
 interface QueueItem {
   type: string;
   payload: unknown;
-  resolve: () => void;
+  resolve: (value?: any) => void;
   reject: (reason?: unknown) => void;
 }
 
@@ -83,6 +84,11 @@ export function useBeadWorker(): UseBeadWorkerReturn {
         return;
       }
 
+      if (msg.type === 'EXPORT_READY') {
+        finishPending('resolve', msg.payload.blob);
+        return;
+      }
+
       if (msg.type === 'ERROR') {
         setError(msg.payload.message);
         finishPending('reject', new Error(msg.payload.message));
@@ -121,10 +127,10 @@ export function useBeadWorker(): UseBeadWorkerReturn {
     worker.postMessage({ type: next.type, payload: next.payload });
   };
 
-  const post = async <T>(type: string, payload: T): Promise<void> => {
+  const post = async <TPayload, TResult = void>(type: string, payload: TPayload): Promise<TResult> => {
     if (!workerRef.current) throw new Error('Worker not initialized');
 
-    return new Promise<void>((resolve, reject) => {
+    return new Promise<TResult>((resolve, reject) => {
       console.log('[useBeadWorker] enqueue', type);
       queueRef.current.push({ type, payload, resolve, reject });
       runNext();
@@ -158,5 +164,9 @@ export function useBeadWorker(): UseBeadWorkerReturn {
     await post('REQUANTIZE', { brand, maxColors, mode });
   };
 
-  return { isProcessing, progress, result, error, loadImage, loadImageFromData, setPalette, process, requantize };
+  const exportPreview = async (options: RenderOptions) => {
+    return post<RenderOptions, Blob>('EXPORT_PREVIEW', options);
+  };
+
+  return { isProcessing, progress, result, error, loadImage, loadImageFromData, setPalette, process, requantize, exportPreview };
 }

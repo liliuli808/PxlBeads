@@ -23,7 +23,7 @@ function resizeToMaxDimension(bitmap: ImageBitmap): ImageData {
 
 export function UploadPage() {
   const navigate = useNavigate();
-  const setImageData = useProjectStore((s) => s.setImageData);
+  const setSourceImageData = useProjectStore((s) => s.setSourceImageData);
   const [isDragging, setIsDragging] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -63,7 +63,7 @@ export function UploadPage() {
     try {
       const bitmap = await createImageBitmap(file);
       const imageData = resizeToMaxDimension(bitmap);
-      setImageData(imageData);
+      setSourceImageData(imageData);
       navigate('/editor');
     } catch {
       setError('无法读取图片，请尝试其他文件');
