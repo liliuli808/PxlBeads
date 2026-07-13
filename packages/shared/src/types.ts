@@ -1,5 +1,6 @@
 export type RGB = [number, number, number];
 export type Lab = [number, number, number];
+export type OKLab = [number, number, number];
 
 export interface BrandColor {
   brand: string;
@@ -7,6 +8,7 @@ export interface BrandColor {
   name?: string;
   rgb: RGB;
   lab: Lab;
+  oklab?: OKLab;
 }
 
 export interface BeadStats {
@@ -105,6 +107,10 @@ export interface ProcessConfig {
   floodFillBackground?: boolean;
   backgroundTolerance?: number;
   beadStyle?: 'square' | 'round';
+  style?: 'realistic' | 'illustration';
+  detailLevel?: 'simple' | 'standard' | 'fine';
+  faceEnhance?: 'off' | 'natural' | 'strong';
+  useSemanticPipeline?: boolean;
 }
 
 export function createProcessConfigForMode(patternMode: PatternMode, brand = 'mard'): ProcessConfig {
@@ -129,6 +135,10 @@ export function createProcessConfigForMode(patternMode: PatternMode, brand = 'ma
     floodFillBackground: preset.floodFillBackground,
     backgroundTolerance: preset.backgroundTolerance,
     beadStyle: 'square',
+    style: 'illustration',
+    detailLevel: 'standard',
+    faceEnhance: 'natural',
+    useSemanticPipeline: true,
   };
 }
 
@@ -144,6 +154,15 @@ export interface PipelineOutput {
   stats: BeadStats;
   preview: ImageData;
   beadStyle?: 'square' | 'round';
+  quality?: {
+    noise: number;
+    edgeRetention: number;
+    featureReadability: number;
+    paletteCompliance: number;
+    total: number;
+    warnings: string[];
+  };
+  semanticLabels?: string[];
 }
 
 export interface RenderOptions {

@@ -4,6 +4,13 @@ import { enhanceEdges, floodFillBackground, posterize } from './photoProcessing'
 import { QuantizeOptions } from './quantizeToBrand';
 import { quantizeToBrand } from './quantizeToBrand';
 import { renderPattern } from './renderPattern';
+import { normalizeImage } from './inputNormalizer';
+import { analyzeSemantics } from './semanticAnalyzer';
+import { semanticDownsample } from './semanticDownsampler';
+import { quantizeSemanticGrid } from './semanticQuantizer';
+import { optimizeBeadability } from './beadabilityOptimizer';
+import { protectFeatures } from './featureProtector';
+import { evaluateQuality } from './qualityEvaluator';
 
 const WORK_SCALE = 4;
 
@@ -274,11 +281,100 @@ export function renderPreview(input: PipelineInput, grid: PipelineOutput['grid']
   return ctx.getImageData(0, 0, canvas.width, canvas.height);
 }
 
+function runSemanticPipeline(
+  input: PipelineInput,
+  palette: BrandColor[],
+  onProgress?: (phase: string, percent: number) => void
+): PipelineOutput {
+  onProgress?.('预处理', 0.1);
+  const normalized = normalizeImage(input.imageData, {
+    maxDimension: Math.max(input.width, input.height) * 4,
+    backgroundColor: '#ffffff',
+    applyBilateral: input.style !== 'realistic',
+    bilateralSpatialSigma: input.style === 'illustration' ? 3 : 2,
+    bilateralColorSigma: input.style === 'illustration' ? 48 : 32,
+  });
+
+  onProgress?.('语义分析', 0.25);
+  const semantic = analyzeSemantics(normalized.imageData, { regionCount: 6 });
+
+  onProgress?.('语义下采样', 0.4);
+  const gridPixels = semanticDownsample(
+    normalized.imageData,
+    semantic,
+    input.width,
+    input.height
+  ).flat();
+
+  onProgress?.('量化', 0.55);
+  const detailLevel = input.detailLevel ?? 'standard';
+  const minComponentSize =
+    detailLevel === 'simple' ? 4 : detailLevel === 'fine' ? 2 : 3;
+
+  const { grid: flatGrid, usedPalette, stats } = quantizeSemanticGrid(gridPixels, palette, {
+    maxColors: input.maxColors,
+    dither: input.dither,
+    ditherStrength: input.ditherStrength,
+    confettiMinRatio: input.confettiMinRatio ?? 0,
+  });
+
+  onProgress?.('可拼性优化', 0.7);
+  let optimizedGrid = optimizeBeadability(flatGrid, semantic.labels, input.width, input.height, {
+    minComponentSize,
+    protectedLabels: input.faceEnhance !== 'off' ? ['feature'] : [],
+    maxIterations: detailLevel === 'fine' ? 5 : 3,
+  });
+
+  if (input.faceEnhance !== 'off') {
+    onProgress?.('五官保护', 0.85);
+    optimizedGrid = protectFeatures(
+      optimizedGrid,
+      semantic.labels,
+      input.width,
+      input.height,
+      palette,
+      {
+        minEyeWidth: input.faceEnhance === 'strong' ? 3 : 2,
+        minEyeHeight: input.faceEnhance === 'strong' ? 3 : 2,
+        minMouthWidth: input.faceEnhance === 'strong' ? 4 : 3,
+      }
+    );
+  }
+
+  onProgress?.('渲染', 0.95);
+  const preview = renderPreview(input, optimizedGrid);
+  const quality = evaluateQuality(
+    optimizedGrid,
+    semantic.labels,
+    input.width,
+    input.height,
+    input.maxColors
+  );
+
+  onProgress?.('完成', 1);
+
+  return {
+    grid: optimizedGrid,
+    width: input.width,
+    height: input.height,
+    palette: usedPalette,
+    stats,
+    preview,
+    beadStyle: input.beadStyle ?? 'square',
+    quality,
+    semanticLabels: semantic.labels,
+  };
+}
+
 export async function runPipeline(
   input: PipelineInput,
   palette: BrandColor[],
   onProgress?: (phase: string, percent: number) => void
 ): Promise<PipelineOutput> {
+  if (input.useSemanticPipeline) {
+    return runSemanticPipeline(input, palette, onProgress);
+  }
+
   const patternMode = resolvePatternMode(input.patternMode);
   const preset = PATTERN_MODE_CONFIG[patternMode];
 

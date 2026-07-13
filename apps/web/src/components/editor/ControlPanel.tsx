@@ -26,12 +26,103 @@ export function ControlPanel({
     onChange({
       ...next,
       beadStyle: config.beadStyle ?? next.beadStyle,
+      style: config.style ?? next.style,
+      detailLevel: config.detailLevel ?? next.detailLevel,
+      faceEnhance: config.faceEnhance ?? next.faceEnhance,
+      useSemanticPipeline: config.useSemanticPipeline ?? next.useSemanticPipeline,
     });
   };
 
   return (
     <div className="bg-white rounded-lg shadow p-4 space-y-4">
       <h2 className="text-lg font-semibold">生成设置</h2>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">新增强流水线</label>
+        <div className="flex gap-2">
+          {([
+            { value: true, label: '语义感知' },
+            { value: false, label: '经典' },
+          ] as const).map((option) => (
+            <button
+              key={option.label}
+              type="button"
+              onClick={() => onChange({ useSemanticPipeline: option.value })}
+              className={[
+                'flex-1 px-3 py-1 rounded border text-sm',
+                (config.useSemanticPipeline ?? true) === option.value
+                  ? 'bg-indigo-600 text-white border-indigo-600'
+                  : 'bg-white text-gray-700 border-gray-300 hover:border-indigo-400',
+              ].join(' ')}
+            >
+              {option.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">风格</label>
+        <div className="flex gap-2">
+          {(['realistic', 'illustration'] as const).map((style) => (
+            <button
+              key={style}
+              type="button"
+              onClick={() => onChange({ style })}
+              className={[
+                'flex-1 px-3 py-1 rounded border text-sm',
+                (config.style ?? 'illustration') === style
+                  ? 'bg-indigo-600 text-white border-indigo-600'
+                  : 'bg-white text-gray-700 border-gray-300 hover:border-indigo-400',
+              ].join(' ')}
+            >
+              {style === 'realistic' ? '写实' : '柔化插画'}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">细节等级</label>
+        <div className="flex gap-2">
+          {(['simple', 'standard', 'fine'] as const).map((level) => (
+            <button
+              key={level}
+              type="button"
+              onClick={() => onChange({ detailLevel: level })}
+              className={[
+                'flex-1 px-3 py-1 rounded border text-sm',
+                (config.detailLevel ?? 'standard') === level
+                  ? 'bg-indigo-600 text-white border-indigo-600'
+                  : 'bg-white text-gray-700 border-gray-300 hover:border-indigo-400',
+              ].join(' ')}
+            >
+              {level === 'simple' ? '简洁' : level === 'standard' ? '标准' : '精细'}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">五官增强</label>
+        <div className="flex gap-2">
+          {(['off', 'natural', 'strong'] as const).map((level) => (
+            <button
+              key={level}
+              type="button"
+              onClick={() => onChange({ faceEnhance: level })}
+              className={[
+                'flex-1 px-3 py-1 rounded border text-sm',
+                (config.faceEnhance ?? 'natural') === level
+                  ? 'bg-indigo-600 text-white border-indigo-600'
+                  : 'bg-white text-gray-700 border-gray-300 hover:border-indigo-400',
+              ].join(' ')}
+            >
+              {level === 'off' ? '关闭' : level === 'natural' ? '自然' : '明显'}
+            </button>
+          ))}
+        </div>
+      </div>
 
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-1">生成类型</label>
