@@ -153,6 +153,11 @@ export interface RenderOptions {
   showLabels?: boolean;
   bgColor?: string;
   beadStyle?: 'square' | 'round';
+  showLegend?: boolean;
+  legendPalette?: BrandColor[];
+  legendCounts?: Record<string, number>;
+  gridColor?: string;
+  gridLineWidth?: number;
 }
 
 export type WorkerRequest =

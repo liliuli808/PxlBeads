@@ -14,7 +14,7 @@ export interface JimengRedrawRecommendation {
   updates?: Partial<ProcessConfig>;
 }
 
-export type JimengRedrawModeId = 'large' | 'small' | 'portrait';
+export type JimengRedrawModeId = 'large' | 'small' | 'portrait' | 'cartoon';
 
 export interface JimengRedrawMode {
   id: JimengRedrawModeId;
@@ -103,6 +103,34 @@ export const JIMENG_REDRAW_MODES: JimengRedrawMode[] = [
         confettiMinRatio: 0.004,
         floodFillBackground: false,
         backgroundTolerance: 32,
+      },
+    },
+  },
+  {
+    id: 'cartoon',
+    label: '卡通插画',
+    description: '转成扁平卡通插画，最接近十字绣参考图风格',
+    helper: '会把照片重绘为纯色块、粗轮廓的卡通插画，适合生成干净图纸。',
+    prompt: [
+      '基于参考图重绘为扁平卡通插画风格，适合转拼豆/十字绣图纸。',
+      '使用纯色块填充，清晰深色外轮廓，无渐变、无纹理、无阴影、无复杂细节。',
+      '保留主体主要特征，删除细碎毛发、复杂背景、微小装饰。',
+      '背景为白色或极浅纯色，画面干净。',
+      '不要画出拼豆网格、像素格、文字、水印或边框。',
+    ].join(''),
+    defaultSize: '2048x2048',
+    recommendation: {
+      patternMode: 'logo',
+      updates: {
+        width: 80,
+        height: 80,
+        maxColors: 24,
+        mode: 'smart',
+        posterizeLevels: 4,
+        edgeThreshold: 80,
+        edgeDarken: 0.7,
+        dither: false,
+        floodFillBackground: false,
       },
     },
   },

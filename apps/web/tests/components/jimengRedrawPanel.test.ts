@@ -25,11 +25,11 @@ function getRedrawModes(): RedrawModeForTest[] {
 }
 
 describe('Jimeng redraw panel presets', () => {
-  it('offers large, small, and portrait redraw strategies', () => {
+  it('offers large, small, cartoon, and portrait redraw strategies', () => {
     const modes = getRedrawModes();
 
-    expect(modes.map((mode) => mode.id)).toEqual(['large', 'small', 'portrait']);
-    expect(modes.map((mode) => mode.label)).toEqual(['大图图纸', '小图清晰', '主体特写']);
+    expect(modes.map((mode) => mode.id)).toEqual(['large', 'small', 'cartoon', 'portrait']);
+    expect(modes.map((mode) => mode.label)).toEqual(['大图图纸', '小图清晰', '卡通插画', '主体特写']);
     expect(modes.find((mode) => mode.id === 'large')?.recommendation.patternMode).toBe('pattern');
     expect(modes.find((mode) => mode.id === 'portrait')?.recommendation.patternMode).toBe('subject');
   });

@@ -10,18 +10,23 @@ interface PdfExportButtonProps {
 
 export function PdfExportButton({ result, filename = 'pxlbeads-pattern.pdf' }: PdfExportButtonProps) {
   const handleClick = () => {
-    const cellSize = 20;
+    const cellSize = 28;
     const canvas = renderPattern(result.grid, result.width, result.height, {
       cellSize,
       showGrid: true,
       showCodes: false,
       showLabels: true,
       beadStyle: result.beadStyle ?? 'square',
+      showLegend: true,
+      legendPalette: result.palette,
+      legendCounts: result.stats.counts,
+      gridColor: 'rgba(156, 163, 175, 0.35)',
+      gridLineWidth: 1,
     }) as HTMLCanvasElement;
     const imageData = canvas.toDataURL('image/png');
 
-    const patternWidth = result.width * cellSize;
-    const patternHeight = result.height * cellSize;
+    const patternWidth = canvas.width;
+    const patternHeight = canvas.height;
     const isLandscape = patternWidth > patternHeight;
 
     const doc = new jsPDF({

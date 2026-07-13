@@ -74,9 +74,15 @@ export function renderPattern(
     showLabels,
     bgColor = '#ffffff',
     beadStyle = 'square',
+    showLegend,
+    legendPalette,
+    legendCounts,
+    gridColor = '#9ca3af',
+    gridLineWidth = Math.max(1, Math.round(cellSize / 20)),
   } = options;
   const labelSize = showLabels ? Math.max(18, cellSize) : 0;
-  const margin = { top: labelSize, left: labelSize, right: 2, bottom: 2 };
+  const legendWidth = showLegend ? Math.max(140, cellSize * 4) : 0;
+  const margin = { top: labelSize, left: labelSize, right: 2 + legendWidth, bottom: 2 };
   const gridWidth = width * cellSize;
   const gridHeight = height * cellSize;
   const canvasWidth = gridWidth + margin.left + margin.right;
@@ -158,8 +164,8 @@ export function renderPattern(
   }
 
   if (showGrid && beadStyle !== 'round') {
-    ctx.strokeStyle = '#9ca3af';
-    ctx.lineWidth = Math.max(1, Math.round(cellSize / 20));
+    ctx.strokeStyle = gridColor;
+    ctx.lineWidth = gridLineWidth;
     const offset = ctx.lineWidth === 1 ? 0.5 : 0;
     for (let x = 0; x <= width; x++) {
       ctx.beginPath();
@@ -172,6 +178,42 @@ export function renderPattern(
       ctx.moveTo(margin.left, margin.top + y * cellSize + offset);
       ctx.lineTo(margin.left + gridWidth, margin.top + y * cellSize + offset);
       ctx.stroke();
+    }
+  }
+
+  // Draw legend on the right side
+  if (showLegend && legendPalette && legendPalette.length > 0) {
+    const sortedPalette = [...legendPalette].sort((a, b) => {
+      const countA = legendCounts ? legendCounts[`${a.brand}:${a.code}`] ?? 0 : 0;
+      const countB = legendCounts ? legendCounts[`${b.brand}:${b.code}`] ?? 0 : 0;
+      return countB - countA;
+    });
+
+    const legendX = margin.left + gridWidth + 12;
+    const legendTop = margin.top;
+    const itemHeight = Math.max(24, cellSize * 0.75);
+    const swatchSize = Math.max(14, cellSize * 0.45);
+    const legendFontSize = Math.max(10, Math.min(16, cellSize / 2.5));
+
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'middle';
+    ctx.font = `${legendFontSize}px sans-serif`;
+
+    for (let i = 0; i < sortedPalette.length; i++) {
+      const color = sortedPalette[i];
+      const y = legendTop + i * itemHeight;
+
+      ctx.fillStyle = rgbToHex(color.rgb);
+      ctx.fillRect(legendX, y + (itemHeight - swatchSize) / 2, swatchSize, swatchSize);
+
+      ctx.strokeStyle = 'rgba(0, 0, 0, 0.15)';
+      ctx.lineWidth = 1;
+      ctx.strokeRect(legendX, y + (itemHeight - swatchSize) / 2, swatchSize, swatchSize);
+
+      ctx.fillStyle = '#374151';
+      const count = legendCounts ? legendCounts[`${color.brand}:${color.code}`] ?? 0 : 0;
+      const text = `${color.code}${color.name ? ` ${color.name}` : ''} · ${count}`;
+      ctx.fillText(text, legendX + swatchSize + 8, y + itemHeight / 2);
     }
   }
 
