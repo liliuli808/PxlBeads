@@ -102,11 +102,10 @@ export function useBeadWorker(): UseBeadWorkerReturn {
 
     return () => {
       console.log('[useBeadWorker] terminating worker');
-      const item = pendingRef.current;
+      // Drop pending work silently when the component unmounts so that React
+      // Strict Mode / route changes do not surface uncaught "Worker terminated"
+      // rejections to the user.
       pendingRef.current = null;
-      if (item) {
-        item.reject(new Error('Worker terminated'));
-      }
       queueRef.current = [];
       worker.terminate();
     };
