@@ -27,21 +27,25 @@ function parseBackgroundColor(color: string): [number, number, number] {
   ];
 }
 
-function resizeImageData(src: ImageData, targetW: number, targetH: number): ImageData {
-  const canvas = document.createElement('canvas');
-  canvas.width = targetW;
-  canvas.height = targetH;
-  const ctx = canvas.getContext('2d')!;
-  ctx.imageSmoothingEnabled = false;
+function resizeImageDataNearestNeighbor(src: ImageData, targetW: number, targetH: number): ImageData {
+  const output = new ImageData(targetW, targetH);
+  const scaleX = src.width / targetW;
+  const scaleY = src.height / targetH;
 
-  const srcCanvas = document.createElement('canvas');
-  srcCanvas.width = src.width;
-  srcCanvas.height = src.height;
-  const srcCtx = srcCanvas.getContext('2d')!;
-  srcCtx.putImageData(src, 0, 0);
+  for (let y = 0; y < targetH; y++) {
+    for (let x = 0; x < targetW; x++) {
+      const srcX = Math.min(src.width - 1, Math.floor(x * scaleX));
+      const srcY = Math.min(src.height - 1, Math.floor(y * scaleY));
+      const srcIdx = (srcY * src.width + srcX) * 4;
+      const dstIdx = (y * targetW + x) * 4;
+      output.data[dstIdx] = src.data[srcIdx];
+      output.data[dstIdx + 1] = src.data[srcIdx + 1];
+      output.data[dstIdx + 2] = src.data[srcIdx + 2];
+      output.data[dstIdx + 3] = src.data[srcIdx + 3];
+    }
+  }
 
-  ctx.drawImage(srcCanvas, 0, 0, targetW, targetH);
-  return ctx.getImageData(0, 0, targetW, targetH);
+  return output;
 }
 
 export function normalizeImage(
@@ -77,7 +81,7 @@ export function normalizeImage(
     const scale = Math.min(maxDimension / width, maxDimension / height);
     const targetW = Math.max(1, Math.round(width * scale));
     const targetH = Math.max(1, Math.round(height * scale));
-    scaled = resizeImageData(composed, targetW, targetH);
+    scaled = resizeImageDataNearestNeighbor(composed, targetW, targetH);
   }
 
   // Mild bilateral denoising to remove skin/background speckles while
