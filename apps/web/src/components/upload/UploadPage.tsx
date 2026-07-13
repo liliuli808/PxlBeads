@@ -17,6 +17,7 @@ function resizeToMaxDimension(bitmap: ImageBitmap): ImageData {
   canvas.width = width;
   canvas.height = height;
   const ctx = canvas.getContext('2d')!;
+  ctx.imageSmoothingEnabled = false;
   ctx.drawImage(bitmap, 0, 0, width, height);
   return ctx.getImageData(0, 0, width, height);
 }

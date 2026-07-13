@@ -143,6 +143,7 @@ export interface PipelineOutput {
   palette: BrandColor[];
   stats: BeadStats;
   preview: ImageData;
+  beadStyle?: 'square' | 'round';
 }
 
 export interface RenderOptions {

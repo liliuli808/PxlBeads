@@ -160,16 +160,17 @@ export function renderPattern(
   if (showGrid && beadStyle !== 'round') {
     ctx.strokeStyle = '#9ca3af';
     ctx.lineWidth = Math.max(1, Math.round(cellSize / 20));
+    const offset = ctx.lineWidth === 1 ? 0.5 : 0;
     for (let x = 0; x <= width; x++) {
       ctx.beginPath();
-      ctx.moveTo(margin.left + x * cellSize, margin.top);
-      ctx.lineTo(margin.left + x * cellSize, margin.top + gridHeight);
+      ctx.moveTo(margin.left + x * cellSize + offset, margin.top);
+      ctx.lineTo(margin.left + x * cellSize + offset, margin.top + gridHeight);
       ctx.stroke();
     }
     for (let y = 0; y <= height; y++) {
       ctx.beginPath();
-      ctx.moveTo(margin.left, margin.top + y * cellSize);
-      ctx.lineTo(margin.left + gridWidth, margin.top + y * cellSize);
+      ctx.moveTo(margin.left, margin.top + y * cellSize + offset);
+      ctx.lineTo(margin.left + gridWidth, margin.top + y * cellSize + offset);
       ctx.stroke();
     }
   }

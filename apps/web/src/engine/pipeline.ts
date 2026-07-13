@@ -103,8 +103,7 @@ function drawImageDataToCanvas(
   const ctx = canvas.getContext('2d')!;
   ctx.fillStyle = `rgba(${fill[0]}, ${fill[1]}, ${fill[2]}, ${fill[3] / 255})`;
   ctx.fillRect(0, 0, targetW, targetH);
-  ctx.imageSmoothingEnabled = true;
-  ctx.imageSmoothingQuality = 'high';
+  ctx.imageSmoothingEnabled = false;
 
   const scale =
     fit === 'cover'
@@ -181,8 +180,7 @@ export function subjectFill(src: ImageData, targetSize: number, padRatio = 0.04)
   const canvas = new OffscreenCanvas(targetSize, targetSize);
   const ctx = canvas.getContext('2d')!;
   ctx.clearRect(0, 0, targetSize, targetSize);
-  ctx.imageSmoothingEnabled = true;
-  ctx.imageSmoothingQuality = 'high';
+  ctx.imageSmoothingEnabled = false;
 
   const srcCanvas = new OffscreenCanvas(cropped.width, cropped.height);
   const srcCtx = srcCanvas.getContext('2d')!;
@@ -306,5 +304,6 @@ export async function runPipeline(
     palette: usedPalette,
     stats,
     preview,
+    beadStyle: input.beadStyle ?? 'square',
   };
 }

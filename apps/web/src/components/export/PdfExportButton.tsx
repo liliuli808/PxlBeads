@@ -10,12 +10,13 @@ interface PdfExportButtonProps {
 
 export function PdfExportButton({ result, filename = 'pxlbeads-pattern.pdf' }: PdfExportButtonProps) {
   const handleClick = () => {
-    const cellSize = 14;
+    const cellSize = 20;
     const canvas = renderPattern(result.grid, result.width, result.height, {
       cellSize,
       showGrid: true,
       showCodes: false,
       showLabels: true,
+      beadStyle: result.beadStyle ?? 'square',
     }) as HTMLCanvasElement;
     const imageData = canvas.toDataURL('image/png');
 

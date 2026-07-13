@@ -31,6 +31,7 @@ export function imageBitmapToImageData(
   if (!ctx) {
     throw new Error('无法创建图片画布');
   }
+  ctx.imageSmoothingEnabled = false;
   ctx.drawImage(bitmap, 0, 0, width, height);
   return ctx.getImageData(0, 0, width, height);
 }

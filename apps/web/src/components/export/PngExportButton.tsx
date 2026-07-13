@@ -10,10 +10,11 @@ interface PngExportButtonProps {
 export function PngExportButton({ result, filename = 'pxlbeads-pattern.png' }: PngExportButtonProps) {
   const handleClick = () => {
     const canvas = renderPattern(result.grid, result.width, result.height, {
-      cellSize: 24,
+      cellSize: 32,
       showGrid: true,
       showCodes: true,
       showLabels: true,
+      beadStyle: result.beadStyle ?? 'square',
     }) as HTMLCanvasElement;
     canvas.toBlob((blob) => {
       if (blob) downloadBlob(blob, filename);
